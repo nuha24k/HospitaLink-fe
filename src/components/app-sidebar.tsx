@@ -1,5 +1,5 @@
-import { Home, Moon, Sun, User } from "lucide-react"
-import { NavLink } from "react-router-dom"
+import { Home, LogIn, Moon, Sun, User } from "lucide-react"
+import { NavLink, useLocation } from "react-router-dom"
 import { useEffect, useState } from "react"
 
 import {
@@ -18,16 +18,18 @@ import { Button } from "@/components/ui/button"
 
 const items = [
     { title: "Dashboard", url: "/dashboard", icon: Home },
-    { title: "Pasien", url: "/patient", icon: User }
+    { title: "Pasien", url: "/patient", icon: User },
+    { title: "Login", url: "/login", icon: LogIn }
 ]
 
 export function AppSidebar() {
     const [isDark, setIsDark] = useState(false)
+    const location = useLocation()
 
     useEffect(() => {
         const stored = localStorage.getItem("theme") as "light" | "dark" | null
-        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-        const initial = stored ?? (prefersDark ? "dark" : "light")
+        // Default ke dark mode jika belum ada preferensi tersimpan
+        const initial = stored ?? "dark"
         const isDarkMode = initial === "dark"
         document.documentElement.classList.toggle("dark", isDarkMode)
         setIsDark(isDarkMode)
