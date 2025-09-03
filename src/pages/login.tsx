@@ -1,4 +1,6 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import authService from "@/services/authService"
 import { useForm } from "react-hook-form"
 import { Eye, EyeOff, Sparkles, Mail, Lock } from "lucide-react"
 
@@ -30,6 +32,8 @@ type LoginFormValues = {
 export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+    const [errorMessage, setErrorMessage] = useState<string | null>(null)
+    const navigate = useNavigate()
 
     const form = useForm<LoginFormValues>({
         defaultValues: {
@@ -40,13 +44,18 @@ export default function LoginPage() {
     })
 
     const handleSubmit = async (values: LoginFormValues) => {
+        setErrorMessage(null)
         setIsLoading(true)
-        // Simulasi login
-        await new Promise((resolve) => setTimeout(resolve, 1000))
-        console.log("Login values:", values)
-        setIsLoading(false)
-        // Redirect ke dashboard setelah login berhasil
-        alert("Login berhasil!")
+        try {
+            const res = await authService.loginWeb({ email: values.email, password: values.password })
+            if (res.success) {
+                navigate('/dashboard', { replace: true })
+            } else {
+                setErrorMessage(res.message || 'Email atau password salah')
+            }
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     return (
@@ -76,6 +85,11 @@ export default function LoginPage() {
                     </CardHeader>
                     <CardContent>
                         <Form {...form}>
+                            {errorMessage && (
+                                <div className="mb-4 text-sm text-red-600 dark:text-red-400">
+                                    {errorMessage}
+                                </div>
+                            )}
                             <div className="space-y-6">
                                 <FormField
                                     control={form.control}

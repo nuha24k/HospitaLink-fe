@@ -1,4 +1,4 @@
-import { ChartArea, Home, LogIn, Moon, RegexIcon, Sun, User } from "lucide-react"
+import {  Home, Moon, Sun, User } from "lucide-react"
 import { NavLink, useLocation } from "react-router-dom"
 import { useEffect, useState } from "react"
 
@@ -18,10 +18,7 @@ import { Button } from "@/components/ui/button"
 
 const items = [
     { title: "Dashboard", url: "/dashboard", icon: Home },
-    { title: "Pasien", url: "/patient", icon: User },
-    { title: "Chart", url: "/chart", icon: ChartArea },
-    { title: "Login", url: "/login", icon: LogIn },
-    { title: "Register", url: "/Register", icon: RegexIcon }
+    { title: "User", url: "/user", icon: User },
 ]
 
 export function AppSidebar() {

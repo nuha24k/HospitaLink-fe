@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input"
 
 export type PatientFormValues = {
   id?: string
+  email?: string
+  password?: string
   name: string
   nik: string
   birthDate: string

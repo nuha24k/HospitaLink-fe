@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form"
-import { Edit } from "lucide-react"
+import { Plus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { 
@@ -8,56 +8,55 @@ import {
   DialogDescription, 
   DialogFooter, 
   DialogHeader, 
-  DialogTitle 
+  DialogTitle, 
+  DialogTrigger 
 } from "@/components/ui/dialog"
 import { Form } from "@/components/ui/form"
-import { FieldText, FieldDate, FieldSelectGender, type PatientFormValues } from "./PatientFields"
+import { FieldText, FieldDate, FieldSelectGender, type PatientFormValues } from "./userFields"
 
-type Patient = PatientFormValues & { id: string }
-
-export default function EditPatientDialog({
-  patient,
-  open,
-  onOpenChange,
-  onSave,
-}: {
-  patient: Patient | null
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  onSave: (values: Patient) => void
-}) {
+export default function AddPatientDialog({ onAdd }: { onAdd: (values: PatientFormValues) => void }) {
   const form = useForm<PatientFormValues>({
-    values: patient
-      ? {
-          id: patient.id,
-          name: patient.name,
-          nik: patient.nik,
-          birthDate: patient.birthDate,
-          gender: patient.gender,
-          phone: patient.phone,
-          address: patient.address,
-        }
-      : undefined,
+    defaultValues: {
+      email: "",
+      password: "",
+      name: "",
+      nik: "",
+      birthDate: "",
+      gender: "L",
+      phone: "",
+      address: "",
+    },
   })
 
-  if (!patient) return null
-
   const handleSubmit = (values: PatientFormValues) => {
-    onSave({ ...(values as Patient), id: patient.id })
+    onAdd(values)
+    form.reset()
+  }
+
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      form.reset()
+    }
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog onOpenChange={handleOpenChange}>
+      <DialogTrigger asChild>
+        <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transition-all duration-200">
+          <Plus className="h-4 w-4 mr-2" />
+          Tambah Pasien
+        </Button>
+      </DialogTrigger>
       <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader className="space-y-3">
           <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-            <div className="w-8 h-8 bg-orange-100 dark:bg-orange-900 rounded-lg flex items-center justify-center">
-              <Edit className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+            <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+              <Plus className="h-4 w-4 text-blue-600 dark:text-blue-400" />
             </div>
-            Edit Data Pasien
+            Tambah Pasien Baru
           </DialogTitle>
           <DialogDescription className="text-gray-600 dark:text-gray-400">
-            Perbarui informasi pasien {patient.name} dengan data yang benar.
+            Masukkan informasi lengkap pasien untuk menambahkan data baru ke sistem.
           </DialogDescription>
         </DialogHeader>
         
@@ -65,6 +64,8 @@ export default function EditPatientDialog({
           <Form {...form}>
             <form className="space-y-6" onSubmit={form.handleSubmit(handleSubmit)}>
               <div className="grid grid-cols-1 gap-6">
+                <FieldText name="email" label="Email" form={form} required />
+                <FieldText name="password" label="Password" form={form} required />
                 <FieldText name="name" label="Nama Lengkap" form={form} required />
                 <FieldText name="nik" label="Nomor NIK" form={form} required />
                 
@@ -78,11 +79,11 @@ export default function EditPatientDialog({
               </div>
 
               <DialogFooter className="pt-6 border-t border-gray-200 dark:border-gray-700">
-                <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
+                <Button type="button" variant="outline" className="w-full sm:w-auto" onClick={() => handleOpenChange(false)}>
                   Batal
                 </Button>
-                <Button type="submit" className="w-full sm:w-auto bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800">
-                  Simpan Perubahan
+                <Button type="submit" className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
+                  Simpan Pasien
                 </Button>
               </DialogFooter>
             </form>
